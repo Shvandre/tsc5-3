@@ -29,10 +29,9 @@ contract Task2 with Deployable {
     require(context().sender == self.admin, "Only admin is allowed to refund");
     send(SendParameters{
         to: msg.sender,
-        bounce: false,
+        bounce: true,
         value: 0,
-        mode: SendRemainingValue + SendIgnoreErrors,
-        body: "This is a refund made by admin".asComment()
+        mode: SendRemainingValue + SendIgnoreErrors
     });
   }
 
@@ -41,7 +40,7 @@ contract Task2 with Deployable {
     let msgToAdmin: Cell = beginCell().storeRef(msgAsCell).storeAddress(context().sender).endCell();
     send(SendParameters{
       to: self.admin,
-      bounce: false,
+      bounce: true,
       value: 0,
       mode: SendRemainingValue + SendIgnoreErrors,
       body: msgToAdmin

@@ -30,8 +30,8 @@ contract Task2 with Deployable {
     send(SendParameters{
         to: msg.sender,
         bounce: true,
-        value: context().value,
-        mode: SendPayGasSeparately + SendIgnoreErrors,
+        value: 0,
+        mode: SendRemainingValue + SendIgnoreErrors,
         body: "This is a refund made by admin".asComment()
     });
   }
@@ -42,8 +42,8 @@ contract Task2 with Deployable {
     send(SendParameters{
       to: self.admin,
       bounce: true,
-      value: context().value,
-      mode: SendPayGasSeparately + SendIgnoreErrors,
+      value: 0,
+      mode: SendRemainingValue + SendIgnoreErrors,
       body: msgToAdmin
     });
   }

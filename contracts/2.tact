@@ -31,7 +31,8 @@ contract Task2 with Deployable {
         to: msg.sender,
         bounce: true,
         value: 0,
-        mode: SendRemainingValue + SendIgnoreErrors
+        mode: SendRemainingValue,
+        body: "This is a refund made by admin".asComment()
     });
   }
 
@@ -42,7 +43,7 @@ contract Task2 with Deployable {
       to: self.admin,
       bounce: true,
       value: 0,
-      mode: SendRemainingValue + SendIgnoreErrors,
+      mode: SendRemainingValue,
       body: msgToAdmin
     });
   }

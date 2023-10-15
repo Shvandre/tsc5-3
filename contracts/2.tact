@@ -26,8 +26,24 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
+    require(context().sender == self.admin, "Only admin is allowed to refund");
+    send(SendParameteres{
+        to: msg.sender,
+        bounce: true,
+        value: context().value,
+        mode: 1
+    });
   }
 
   receive(msg: Slice) {
+    let msgAsCell: Cell = beginCell().storeSlice(msg).endCell();
+    let msgToAdmin: Cell = beginCell().storeRef(msgAsCell).storeAddress(context().sender).endCell();
+    send(SendParameters{
+      to: self.admin,
+      bounce: true,
+      value: context().value,
+      mode: 1,
+      body: msgToAdmin
+    });
   }
 }

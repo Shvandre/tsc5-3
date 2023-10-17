@@ -67,6 +67,9 @@ contract Task3 with Deployable {
   }
 
   receive(msg: TokenNotification) {
+    let ctx: Context = context();
+    require(ctx.sender == self.jettonAddressA || ctx.sender == self.jettonAddressB, "");
+
   } 
   
   get fun price(jetton: Address): Int { 

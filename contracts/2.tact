@@ -26,23 +26,22 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    require(context().sender == self.admin, "");
+    nativeThrowUnless(1, context().sender == self.admin);
     send(SendParameters{
         to: msg.sender,
         bounce: false,
         value: 0,
-        mode: SendRemainingValue
+        mode: SendRemainingValue + 3
     });
   }
 
   receive(msg: Slice) {
-    let tmpcell: Cell = beginCell().storeSlice(msg).endCell();
     send(SendParameters{
       to: self.admin,
       bounce: false,
       value: 0,
-      mode: SendRemainingValue,
-      body: beginCell().storeRef(tmpcell).storeAddress(context().sender).endCell()
+      mode: SendRemainingValue + 3,
+      body: beginCell().storeRef(beginCell().storeSlice(msg).endCell()).storeAddress(context().sender).endCell()
     });
   }
 }

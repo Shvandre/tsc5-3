@@ -69,6 +69,17 @@ contract Task3 with Deployable {
   receive(msg: TokenNotification) {
     let ctx: Context = context();
     require(ctx.sender == self.jettonAddressA || ctx.sender == self.jettonAddressB, "");
+    if(ctx.sender == self.jettonAddressA) {
+      let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * ctx.value / self.decimal;
+      if(amountOfAJettonToSend > self.aAmount) {
+        send(SendParameteres{
+          to: ctx.sender,
+          value: 0,
+          mode: SendRemainingValue,
+          bounce: false
+        });
+      }
+    }
 
   } 
   

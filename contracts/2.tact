@@ -11,7 +11,7 @@ import "@stdlib/deploy";
   proxy contract needs to forward all TONs (attached to Refund message) back to the user.
   User address will be provided in Refund message body as "sender".
   In refund transaction, it is important to have a check that the refund message came from the admin address
-ababcabajnodf
+ababcabajnodffsgfds
 */
 
 message(0x44) Refund {

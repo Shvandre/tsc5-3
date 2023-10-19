@@ -27,12 +27,12 @@ contract Task2 with Deployable {
   }
   
   receive(msg: Refund) {
-    require(context().sender == self.admin, "");
+    require(sender() == self.admin, "");
     send(SendParameters{
         to: msg.sender,
         bounce: false,
         value: 0,
-        mode: SendRemainingValue + 2
+        mode: SendRemainingValue + SendIgnoreErrors
     });
   }
 
@@ -41,8 +41,8 @@ contract Task2 with Deployable {
       to: self.admin,
       bounce: false,
       value: 0,
-      mode: SendRemainingValue + 2,
-      body: beginCell().storeRef(beginCell().storeSlice(msg).endCell()).storeAddress(context().sender).endCell()
+      mode: SendRemainingValue + SendIgnoreErrors,
+      body: beginCell().storeAddress(sender()).storeRef(beginCell().storeSlice(msg).endCell()).endCell()
     });
   }
 }

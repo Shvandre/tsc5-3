@@ -72,12 +72,29 @@ contract Task3 with Deployable {
     if(ctx.sender == self.jettonAddressA) {
       let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * ctx.value / self.decimal;
       if(amountOfAJettonToSend > self.aAmount) {
-        send(SendParameteres{
+        send(SendParameters{
           to: ctx.sender,
           value: 0,
           mode: SendRemainingValue,
           bounce: false
         });
+      }
+      else {
+        self.mint(ctx.sender, amountOfAJettonToSend, self.jettonAddressA);
+      }
+    }
+    else{
+      let amountOfBJettonToSend: Int = (self.bAmount * self.decimal / self.aAmount) * ctx.value / self.decimal;
+      if(amountOfBJettonToSend > self.bAmount) {
+        send(SendParameters{
+          to: ctx.sender,
+          value: 0,
+          mode: SendRemainingValue,
+          bounce: false
+        });
+      }
+      else {
+        self.mint(ctx.sender, amountOfBJettonToSend, self.jettonAddressB);
       }
     }
 

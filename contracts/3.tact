@@ -154,17 +154,17 @@ contract Task3 with Deployable {
 
   } 
   
-  get fun price(jetton: Address): Int { 
-    if(self.aAmount == 0 || self.bAmount == 0) {
+  get fun price(jetton: Address): Int {
+    if(self.aAmount == 0) {
       return 0;
     }
-    if(jetton == self.jettonAddressA) {
+    if(self.bAmount == 0) {
+      return 0;
+    }
+    if (self.jettonAddressA == jetton) {
       return self.bAmount * self.decimal / self.aAmount;
-    } else if(jetton == self.jettonAddressB) {
+    } else {
       return self.aAmount * self.decimal / self.bAmount;
-    }
-    else {
-      return 0;
     }
   }
   
@@ -174,8 +174,6 @@ contract Task3 with Deployable {
     } else if(jetton == self.jettonAddressB) {
       return self.bAmount;
     }
-    else{
-      return 0;
-    }
+    return 0;
   }
 }

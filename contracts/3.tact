@@ -171,10 +171,10 @@ contract Task3 with Deployable {
   
   get fun balance(jetton: Address): Int { 
     if(jetton == self.jettonAddressA) {
-      return self.aAmount;
+      return self.bAmount;
     }
     else{
-      return self.bAmount;
+      return self.aAmount;
     }
   }
 }

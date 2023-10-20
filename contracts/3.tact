@@ -72,7 +72,7 @@ contract Task3 with Deployable {
     if(ctx.sender == self.jettonAddressA) {
 
       if(msg.from == self.owner) {
-        self.aAmount += msg.amount;
+        self.aAmount = self.aAmount + msg.amount;
         return;
       }
 
@@ -114,7 +114,7 @@ contract Task3 with Deployable {
       let amountOfBJettonToSend: Int = (self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal;
 
       if(msg.from == self.owner) {
-        self.bAmount += msg.amount;
+        self.bAmount = self.bAmount + msg.amount;
         return;
       }
 
@@ -156,10 +156,10 @@ contract Task3 with Deployable {
   
   get fun price(jetton: Address): Int { 
     if(jetton == self.jettonAddressA) {
-      return self.aAmount * decimal / self.bAmount;
+      return self.aAmount * self.decimal / self.bAmount;
     }
     else {
-      return self.bAmount * decimal / self.aAmount;
+      return self.bAmount * self.decimal / self.aAmount;
     }
   }
   

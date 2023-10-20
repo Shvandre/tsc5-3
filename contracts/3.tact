@@ -70,39 +70,105 @@ contract Task3 with Deployable {
     let ctx: Context = context();
     require(ctx.sender == self.jettonAddressA || ctx.sender == self.jettonAddressB, "");
     if(ctx.sender == self.jettonAddressA) {
-      let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * ctx.value / self.decimal;
+
+      if(msg.from == self.owner) {
+        self.aAmount += msg.amount;
+        return;
+      }
+
+      let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal;
       if(amountOfAJettonToSend > self.aAmount) {
         send(SendParameters{
-          to: ctx.sender,
-          value: 0,
-          mode: SendRemainingValue,
-          bounce: false
-        });
+              to: self.jettonAddressA,
+              value: 0, 
+              mode: SendRemainingValue, 
+              bounce: true, 
+              body: TokenTransfer{queryId: msg.queryId + 1, 
+              amount: amountOfAJettonToSend, 
+              destination: msg.from, 
+              responseDestination: myAddress(), 
+              customPayload: null, 
+              forwardTonAmount: ton("0.01"), 
+              forwardPayload: emptySlice()}.toCell()
+          });
+          self.aAmount = self.aAmount - amountOfAJettonToSend;
+          self.bAmount = self.bAmount + msg.amount;
       }
       else {
-        self.mint(ctx.sender, amountOfAJettonToSend, self.jettonAddressA);
+        send(SendParameters{
+              to: self.jettonAddressB,
+              value: 0, 
+              mode: SendRemainingValue, 
+              bounce: true, 
+              body: TokenTransfer{queryId: msg.queryId + 1, 
+              amount: msg.amount, 
+              destination: msg.from, 
+              responseDestination: myAddress(), 
+              customPayload: null, 
+              forwardTonAmount: ton("0.01"), 
+              forwardPayload: emptySlice()}.toCell()
+          });
       }
     }
     else{
-      let amountOfBJettonToSend: Int = (self.bAmount * self.decimal / self.aAmount) * ctx.value / self.decimal;
+      let amountOfBJettonToSend: Int = (self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal;
+
+      if(msg.from == self.owner) {
+        self.bAmount += msg.amount;
+        return;
+      }
+
       if(amountOfBJettonToSend > self.bAmount) {
         send(SendParameters{
-          to: ctx.sender,
-          value: 0,
-          mode: SendRemainingValue,
-          bounce: false
-        });
+              to: self.jettonAddressB,
+              value: 0, 
+              mode: SendRemainingValue, 
+              bounce: true, 
+              body: TokenTransfer{queryId: msg.queryId + 1, 
+              amount: amountOfBJettonToSend, 
+              destination: msg.from, 
+              responseDestination: myAddress(), 
+              customPayload: null, 
+              forwardTonAmount: ton("0.01"), 
+              forwardPayload: emptySlice()}.toCell()
+          });
+          self.aAmount = self.aAmount + msg.amount;
+          self.bAmount = self.bAmount - amountOfBJettonToSend;
       }
       else {
-        self.mint(ctx.sender, amountOfBJettonToSend, self.jettonAddressB);
+        send(SendParameters{
+              to: self.jettonAddressA,
+              value: 0, 
+              mode: SendRemainingValue, 
+              bounce: true, 
+              body: TokenTransfer{queryId: msg.queryId + 1, 
+              amount: msg.amount, 
+              destination: msg.from, 
+              responseDestination: myAddress(), 
+              customPayload: null, 
+              forwardTonAmount: ton("0.01"), 
+              forwardPayload: emptySlice()}.toCell()
+          });
       }
     }
 
   } 
   
   get fun price(jetton: Address): Int { 
+    if(jetton == self.jettonAddressA) {
+      return self.aAmount * decimal / self.bAmount;
+    }
+    else {
+      return self.bAmount * decimal / self.aAmount;
+    }
   }
   
   get fun balance(jetton: Address): Int { 
+    if(jetton == self.jettonAddressA) {
+      return self.aAmount;
+    }
+    else{
+      return self.bAmount;
+    }
   }
 }

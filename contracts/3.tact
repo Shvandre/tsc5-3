@@ -81,23 +81,22 @@ contract Task3 with Deployable {
     }
 
     if(ctx.sender == self.jettonAddressB) {
-
-      let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal;
-      if(amountOfAJettonToSend <= self.aAmount) {
+      
+      if(((self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal) <= self.aAmount) {
         send(SendParameters{
               to: self.jettonAddressA,
               value: 0, 
               mode: SendRemainingValue, 
               bounce: true, 
               body: TokenTransfer{queryId: 0, 
-              amount: amountOfAJettonToSend, 
+              amount: ((self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal), 
               destination: msg.from, 
               responseDestination: myAddress(), 
               customPayload: null, 
               forwardTonAmount: ton("0.01"), 
               forwardPayload: emptySlice()}.toCell()
           });
-          self.aAmount = self.aAmount - amountOfAJettonToSend;
+          self.aAmount = self.aAmount - ((self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal);
           self.bAmount = self.bAmount + msg.amount;
       }
       else {
@@ -117,23 +116,22 @@ contract Task3 with Deployable {
       }
     }
     if(ctx.sender == self.jettonAddressA){
-      let amountOfBJettonToSend: Int = (self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal;
 
-      if(amountOfBJettonToSend <= self.bAmount) {
+      if(((self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal) <= self.bAmount) {
         send(SendParameters{
               to: self.jettonAddressB,
               value: 0, 
               mode: SendRemainingValue, 
               bounce: true, 
               body: TokenTransfer{queryId: 0, 
-              amount: amountOfBJettonToSend, 
+              amount: ((self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal), 
               destination: msg.from, 
               responseDestination: myAddress(), 
               customPayload: null, 
               forwardTonAmount: ton("0.01"), 
               forwardPayload: emptySlice()}.toCell()
           });
-          self.bAmount = self.bAmount - amountOfBJettonToSend;
+          self.bAmount = self.bAmount - ((self.bAmount * self.decimal / self.aAmount) * msg.amount / self.decimal);
           self.aAmount = self.aAmount + msg.amount;
       }
       else {

@@ -68,8 +68,8 @@ contract Task3 with Deployable {
 
   receive(msg: TokenNotification) {
     let ctx: Context = context();
-    require(ctx.sender == self.jettonAddressA || ctx.sender == self.jettonAddressB, "");
-    if(ctx.sender == self.jettonAddressA) {
+    require((ctx.sender == self.jettonAddressA) || (ctx.sender == self.jettonAddressB), "");
+    if(ctx.sender == self.jettonAddressB) {
 
       if(msg.from == self.owner) {
         self.aAmount = self.aAmount + msg.amount;
@@ -77,7 +77,7 @@ contract Task3 with Deployable {
       }
 
       let amountOfAJettonToSend: Int = (self.aAmount * self.decimal / self.bAmount) * msg.amount / self.decimal;
-      if(amountOfAJettonToSend > self.aAmount) {
+      if(amountOfAJettonToSend < self.aAmount) {
         send(SendParameters{
               to: self.jettonAddressA,
               value: 0, 
@@ -118,7 +118,7 @@ contract Task3 with Deployable {
         return;
       }
 
-      if(amountOfBJettonToSend > self.bAmount) {
+      if(amountOfBJettonToSend < self.bAmount) {
         send(SendParameters{
               to: self.jettonAddressB,
               value: 0, 
